@@ -2,8 +2,10 @@
 using First_API.Controllers.MetricControllers.Base;
 using MetricsMeneger.Controllers.MetricControllers;
 using MetricsMeneger.DAL.BaseModuls;
+using MetricsMeneger.DAL.Modules;
 using MetricsMeneger.DTO.Requests;
 using MetricsMeneger.Responses;
+using MetricsMeneger.Services.Jobs;
 using MetricsMeneger.Services.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,35 +19,20 @@ namespace MetricsMeneger.Controllers
     [ApiController]
     public class MetricsController : ControllerBase, IMetricController
     {
-
+        IRepositoryMetrics _repository;
         private readonly ILogger<MetricsController> _cpuLogger;
-
         private readonly ControllerBaseWorker _controllerBaseWorker;
 
         public MetricsController(IRepositoryMetrics repository,
                                     ILogger<MetricsController> logger,
                                     IMapper mapper)
         {
-            _controllerBaseWorker = new ControllerBaseWorker(repository, mapper, logger);
+            _repository=repository;
+            _controllerBaseWorker = new ControllerBaseWorker(_repository, mapper, logger);
             _cpuLogger = logger;
             logger.LogDebug(1, $"NLog встроен в CpuMetricController");
-        }
-
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] CpuRequestMetricCreate request)
-        {
-            _controllerBaseWorker.AddMetricFromRequest(request, new Metric());
-            _cpuLogger.LogDebug(1, $"Добавлена CpuMetric");
-            return Ok();
-        }
-
-        [HttpGet("all")]
-        public IActionResult GetAll()
-        {
-            _cpuLogger.LogDebug(1, $"Отправлены все CpuMetric");
-            return Ok();
-        }
-        [HttpGet("allcategory")]
+        }      
+        [HttpGet("GetallCategory")]
         public IActionResult GetAllCategoryes()
         {
             _cpuLogger.LogDebug(1, $"Отправлены все Categoryes");
@@ -60,10 +47,10 @@ namespace MetricsMeneger.Controllers
             return Ok(resCategoryes);
         }
 
-        [HttpGet("allInstanse")]
+        [HttpGet("GetallInstanse")]
         public IActionResult GetAllInstanses([FromQuery] string category)
         {
-            _cpuLogger.LogDebug(1, $"Отправлены все Instanses");
+            _cpuLogger.LogDebug(1, $"Отправлены все Instanses из категории \"{category}\"");
             Response cat = new Response() { ResponseData = new List<DtoMetric>() };
             foreach (var item in GetInfo.GetInstansesMetric(category))
             {
@@ -71,31 +58,42 @@ namespace MetricsMeneger.Controllers
             }
             return Ok(cat);
         }
-        [HttpGet("allCounters")]
+
+        [HttpGet("GetallCounters")]
         public IActionResult GetAllCounters([FromQuery] string category, [FromQuery] string instanse)
         {
-
-
-            _cpuLogger.LogDebug(1, $"Отправлены все Counters");
+            _cpuLogger.LogDebug(1, $"Отправлены все Counters связанные с категорией: \"{category}\" и instanse: \"{instanse}\"");
 
             Response cat = new Response() { ResponseData = new List<DtoMetric>() };
 
 
             foreach (var item in GetInfo.GetCounters(instanse, category))
             {
-                cat.ResponseData.Add(new DtoMetric() { CounterName = item });
+                cat.ResponseData.Add(new DtoMetric() {CategoryName= category,InstanceName= instanse, CounterName = item });
             }
             return Ok(cat);
         }
 
-        [HttpPut("addCounters")]
-        public IActionResult UpdateCountersStatus([FromQuery] string category, [FromQuery] string instanse, [FromQuery] string counter, [FromQuery] bool DoOrNot = false)
+        [HttpPut("СonfiguringMetricsCollector")]
+        public IActionResult UpdateCountersStatus([FromQuery] string category, [FromQuery] string instanse, 
+                                                  [FromQuery] string counter , [FromQuery] bool DoOrNot)
         {
             string summary = string.Empty;
             try
             {
-                PerformanceCounter _cpuCounter = new PerformanceCounter(category, counter, instanse);
-                JobWorker._performanceCounters.Add(_cpuCounter, DoOrNot);
+                
+                SettingnsItem _cpuCounter = new SettingnsItem(category, instanse, counter, DoOrNot);
+                 
+                JobWorker.SetOnOff(_cpuCounter);
+
+                if (DoOrNot)
+                {
+                    _cpuLogger.LogDebug(1, $"Включен сбор метрики ( категория: \"{category}\"  instanse: \"{instanse}\" counter: \"{counter}\"");
+                }
+                else 
+                {
+                    _cpuLogger.LogDebug(1, $"Выключен сбор метрики ( категория: \"{category}\"  instanse: \"{instanse}\" counter: \"{counter}\"");
+                }
             }
             catch (Exception ex)
             {
@@ -103,19 +101,7 @@ namespace MetricsMeneger.Controllers
             }
             return Ok(summary);
         }
-
-        //[HttpGet("cluster/from/{fromTime}/to/{toTime}")]
-        //public IActionResult GetCpuMetricsFromAllCluster
-        //        (
-        //        [FromRoute] TimeSpan fromTime,
-        //        [FromRoute] TimeSpan toTime
-        //        )
-        //{
-        //    return Ok(_cpuControllerBaseWorker.GetAllmetricToTime(fromTime, toTime));
-        //}
     }
-
-
 }
 
 

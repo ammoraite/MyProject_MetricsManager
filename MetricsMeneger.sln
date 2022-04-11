@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsMeneger", "First API
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject1", "TestProject1\TestProject1.csproj", "{737109A5-CA3A-4374-A303-FFC799326A13}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{737109A5-CA3A-4374-A303-FFC799326A13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{737109A5-CA3A-4374-A303-FFC799326A13}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{737109A5-CA3A-4374-A303-FFC799326A13}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{737109A5-CA3A-4374-A303-FFC799326A13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

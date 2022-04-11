@@ -1,11 +1,8 @@
 using AutoMapper;
 using FluentMigrator.Runner;
 using MetricsAgent.Jobs;
-using MetricsMeneger.DAL.BaseModuls;
 using MetricsMeneger.DTO.Jobs;
-using MetricsMeneger.Interfaces;
 using MetricsMeneger.Mappers;
-using MetricsMeneger.Services;
 using MetricsMeneger.Services.Jobs;
 using MetricsMeneger.Services.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -16,7 +13,6 @@ using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
-using static MetricsMeneger.Services.MenegerMigrations;
 
 namespace MetricsMeneger
 {
@@ -78,14 +74,17 @@ namespace MetricsMeneger
             #endregion
 
             #region Jobs
+
+            
+
             services.AddSingleton<IJobFactory, SingletonJobFactory>();
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
             services.AddHostedService<QuartzHostedService>();
 
             services.AddSingleton<MetricJob>();
             services.AddSingleton(new JobSchedule(
-                jobType: typeof(MetricJob),
-                cronExpression: "0/5 * * * * ?")); // Запускать каждые 5 секунд
+                jobType: typeof(MetricJob),cronExpression: 
+                 "0/5 * * * * ?")); // Запускать каждые 5 секунд
             #endregion
 
             #region HttpClient

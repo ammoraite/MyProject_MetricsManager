@@ -33,7 +33,7 @@ namespace MetricsMeneger.Services
 
                 foreach (var item in JobWorker._performanceCounters)
                 {
-                    Delete.Table($"{item.Key.CategoryName}");
+                    Delete.Table($"{item._counter.CategoryName}");
                 }
                 #endregion
             }
