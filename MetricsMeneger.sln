@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsMeneger", "First API\MetricsMeneger.csproj", "{EE601975-AD2B-4F32-9659-013EA96976A1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject1", "TestProject1\TestProject1.csproj", "{737109A5-CA3A-4374-A303-FFC799326A13}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE601975-AD2B-4F32-9659-013EA96976A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE601975-AD2B-4F32-9659-013EA96976A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE601975-AD2B-4F32-9659-013EA96976A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE601975-AD2B-4F32-9659-013EA96976A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{737109A5-CA3A-4374-A303-FFC799326A13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{737109A5-CA3A-4374-A303-FFC799326A13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{737109A5-CA3A-4374-A303-FFC799326A13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{737109A5-CA3A-4374-A303-FFC799326A13}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {037F3C19-C244-407D-8BBD-F8A77849F84B}
+	EndGlobalSection
+EndGlobal

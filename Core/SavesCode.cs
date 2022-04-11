@@ -1,4 +1,4 @@
-﻿namespace MyMetricsMeneger.DAL.BaseModules
+﻿namespace MetricsMeneger.DAL.BaseModules
 {
     //[ApiController]
     //[Route("api/metrics/cpu")]
