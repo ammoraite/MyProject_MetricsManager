@@ -83,19 +83,19 @@ namespace MetricsMeneger.Controllers
 
             foreach (var item in GetInfo.GetCounters(instanse, category))
             {
-                cat.ResponseData.Add(new DtoMetric() { CounterName = item });
+                cat.ResponseData.Add(new DtoMetric() {CategoryName= category,InstanceName= instanse, CounterName = item });
             }
             return Ok(cat);
         }
 
-        [HttpPut("addCounters")]
-        public IActionResult UpdateCountersStatus([FromQuery] string category, [FromQuery] string instanse, [FromQuery] string counter, [FromQuery] bool DoOrNot = false)
+        [HttpPut("SetOnOffCounter")]
+        public IActionResult UpdateCountersStatus([FromQuery] string category, [FromQuery] string instanse, [FromQuery] string counter, [FromQuery] bool DoOrNot)
         {
             string summary = string.Empty;
             try
             {
                 PerformanceCounter _cpuCounter = new PerformanceCounter(category, counter, instanse);
-                JobWorker._performanceCounters.Add(_cpuCounter, DoOrNot);
+                JobWorker.SetOnOff(_cpuCounter, DoOrNot);
             }
             catch (Exception ex)
             {
