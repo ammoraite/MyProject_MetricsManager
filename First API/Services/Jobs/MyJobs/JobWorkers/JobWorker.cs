@@ -1,100 +1,90 @@
 ﻿using MetricsMeneger.DAL.BaseModuls;
-using MetricsMeneger.DAL.Modules;
-using Microsoft.Extensions.Logging;
-using NLog;
 using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Diagnostics;
+using System.Linq;
+
 
 namespace MetricsMeneger.Services.Repositories
 {
-    public static class JobWorker
-    {        
-        public static List<SettingnsItem> _performanceCounters { get; private set; } = new List<SettingnsItem>();
+    internal static class JobWorker
+    {
+        public static List<PerformanceCounter> _performanceCounters { get; private set; } = new List<PerformanceCounter>();
 
-        public static void Run(IRepositoryMetrics _repository)
+        internal static void CollectAndRecordMetricsInTheDataBase(IRepositoryMetrics _repository)
         {
             if (_performanceCounters.Count > 0)
             {
-               
-                foreach (var _counter in _performanceCounters)
+                _performanceCounters.AsParallel().ForAll(x => 
                 {
-                    if (_counter._doOrNot)
+                    _repository.Create(new Metric()
                     {
-                        AddItemInBaseData(_repository, _counter);
-                    }
-                }
+                        CategoryName = x.CategoryName,
+                        InstanceName = x.InstanceName,
+                        CounterName = x.CounterName,
+                        Time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds()),
+                        Value = Convert.ToInt32(x.NextValue())
+                    });
+                });
             }
-
         }
-        private static void AddItemInBaseData(IRepositoryMetrics _repository, SettingnsItem _counter)
-        {
-            _repository.Create(new Metric()
-            {
-                CategoryName = _counter._counter.CategoryName,
-                InstanceName = _counter._counter.InstanceName,
-                CounterName = _counter._counter.CounterName,
-                Time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds()),
-                Value = Convert.ToInt32(_counter._counter.NextValue())
-            });
-        }
-        private static void AddCounter(SettingnsItem performanceCounter)
+        private static void AddCounter(PerformanceCounter performanceCounter)
         {
             if (!ExistCounter(performanceCounter))
             {
                 _performanceCounters.Add(performanceCounter);
             }
         }
-        private static void RemoveCounter(SettingnsItem performanceCounter)
+        private static void RemoveCounter(PerformanceCounter performanceCounter)
         {
-            if (ExistCounter(performanceCounter))
-            {
-                foreach (var item in _performanceCounters)
-                {
-                    if (item._counter.CategoryName == performanceCounter._counter.CategoryName &&
-                    item._counter.InstanceName == performanceCounter._counter.InstanceName &&
-                    item._counter.CounterName == performanceCounter._counter.CounterName)
-                    {
-                        _performanceCounters.Remove(item);
-                    }
-                }
-            }
+            _performanceCounters.Where(x =>
+            (x.CategoryName == performanceCounter.CategoryName) &&
+            (x.InstanceName == performanceCounter.InstanceName) &&
+            (x.CounterName == performanceCounter.CounterName))
+            .AsParallel().ForAll(x => { _performanceCounters.Remove(x); });
         }
-        private static bool ExistCounter(SettingnsItem performanceCounter)
+        private static bool ExistCounter(PerformanceCounter performanceCounter)
         {
             bool Exist = false;
 
             foreach (var item in _performanceCounters)
             {
-                if (item._counter.CategoryName == performanceCounter._counter.CategoryName &&
-                    item._counter.InstanceName == performanceCounter._counter.InstanceName &&
-                    item._counter.CounterName == performanceCounter._counter.CounterName)
+                if (item.CategoryName == performanceCounter.CategoryName &&
+                    item.InstanceName == performanceCounter.InstanceName &&
+                    item.CounterName == performanceCounter.CounterName)
                 {
                     Exist = true;
+                    break;
                 }
             }
 
             return Exist;
         }
-        public static void SetOnOff(SettingnsItem performanceCounter)
+        internal static string SetOnOff(PerformanceCounter performanceCounter, bool doOrNot)
         {
             if (ExistCounter(performanceCounter))
             {
-                if (performanceCounter._doOrNot)
+                if (doOrNot)
                 {
-                    RemoveCounter(performanceCounter);
-                    AddCounter(performanceCounter);
+                    return $"PerformanceCounter уже был включен";
                 }
                 else
                 {
                     RemoveCounter(performanceCounter);
+                    return $"PerformanceCounter отключен";
                 }
             }
-            else if (performanceCounter._doOrNot)
+            else if (doOrNot)
             {
                 AddCounter(performanceCounter);
+                return $"PerformanceCounter успешно включен";
             }
-
+            return $"PerformanceCounter не существует для отключения";
+        }
+        internal static void SetOffCategory(string categoryName)
+        {
+            _performanceCounters.Where(x => x.CategoryName == categoryName)
+            .AsParallel().ForAll(x => { _performanceCounters.Remove(x); });
         }
     }
 }

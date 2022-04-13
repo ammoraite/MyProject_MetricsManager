@@ -20,12 +20,12 @@ namespace MetricsMeneger.Controllers.MetricControllers
 
         public ControllerBaseWorker(
                 IRepositoryMetrics repository,
-                IMapper mapper,
-                ILogger<IMetricController> logger)
+                IMapper mapper)
         {
             this.repository = repository; ;
             this.mapper = mapper;
         }
+        
         public void AddMetricFromRequest(IMetricCreateRequest request, Metric item)
         {
             item.Value = request.Value;

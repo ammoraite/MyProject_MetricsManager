@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace MetricsMeneger.Responses
 {
-    public class Response:IListMetricsResponse<DtoMetric>
+    public class ResponseMetrics:IListMetricsResponse<DtoMetric>
     {
         public List<DtoMetric> ResponseData { get; set; }
 

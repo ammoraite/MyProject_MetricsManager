@@ -18,7 +18,7 @@ namespace MetricsAgent.Jobs
         }
         public Task Execute(IJobExecutionContext context)
         {
-            JobWorker.Run(_repository);
+            JobWorker.CollectAndRecordMetricsInTheDataBase(_repository);
             return Task.CompletedTask;
         }
     }

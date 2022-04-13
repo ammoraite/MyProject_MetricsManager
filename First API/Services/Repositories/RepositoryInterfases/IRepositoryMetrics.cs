@@ -7,10 +7,11 @@ namespace MetricsMeneger.Services.Repositories
 {
     public interface IRepositoryMetrics
     {
-        IList<Metric> GetAll();
-        Metric GetById(int id);
+        IList<Metric> GetAll(string _nameTable);
+        Metric GetById(int id, string _nameTable);
         void Create(Metric item);
         void Update(Metric item);
-        void Delete(int id);
+        void Delete(int id, string _nameTable);
+        IList<string> GetAllCatecoriesInBaseData();
     }
 }
