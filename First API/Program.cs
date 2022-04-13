@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NLog.Web;
 using System;
 
+
 namespace MetricsMeneger
 {
     public class Program

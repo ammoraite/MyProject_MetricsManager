@@ -1,6 +1,7 @@
 ﻿using FluentMigrator;
 using MetricsMeneger.Services.Repositories;
 using System.Diagnostics;
+using System.Linq;
 
 namespace MetricsMeneger.Services
 {
@@ -12,30 +13,20 @@ namespace MetricsMeneger.Services
         {
             public override void Up()
             {
-                foreach (var item in PerformanceCounterCategory.GetCategories())
+                PerformanceCounterCategory.GetCategories().AsParallel().ForAll(category =>
                 {
-                    Create.Table($"{item.CategoryName}").WithColumn("Id").AsInt64().PrimaryKey().Identity()
+                    Create.Table($"{category.CategoryName}").WithColumn("Id").AsInt64().PrimaryKey().Identity()
                                         .WithColumn("CategoryName").AsString()
                                         .WithColumn("InstanceName").AsString()
                                         .WithColumn("CounterName").AsString()
                                         .WithColumn("Value").AsInt64()
                                         .WithColumn("Time").AsInt32();
-                }
-                    
-                
-                
-                
+                });
             }
 
             public override void Down()
-            {
-                #region MetricsTable
-
-                foreach (var item in JobWorker._performanceCounters)
-                {
-                    Delete.Table($"{item._counter.CategoryName}");
-                }
-                #endregion
+            {              
+                JobWorker._performanceCounters.AsParallel().ForAll(x => { Delete.Table($"{x.CategoryName}");});
             }
         }
     }

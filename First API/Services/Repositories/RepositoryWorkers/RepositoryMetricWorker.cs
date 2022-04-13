@@ -19,6 +19,7 @@ namespace MetricsMeneger.Services.Repositories
         {
             _connectionString = connectionString;
         }
+
         public void Create(Metric item)
         {
                 using var connection = new SQLiteConnection(_connectionString);
@@ -26,9 +27,12 @@ namespace MetricsMeneger.Services.Repositories
                 // Создаём команду
                 using var cmd = new SQLiteCommand(connection);
                  // Прописываем в команду SQL-запрос на вставку данных
-                var a = item.CategoryName.Trim().Replace(" ", "");
-                connection.Execute($"CREATE TABLE IF NOT EXISTS {a} (id INTEGER PRIMARY KEY AUTOINCREMENT, CategoryName TEXT, InstanceName TEXT,CounterName TEXT, Value INTEGER, Time INTEGER)");
-                connection.Execute($"INSERT INTO {a} (CategoryName, InstanceName, CounterName, Value, Time) VALUES(@CategoryName, @InstanceName, @CounterName, @Value, @Time)",
+
+                connection.Execute($"CREATE TABLE IF NOT EXISTS {item.CategoryName.Trim().Replace(" ", "")} " +
+                    $"(id INTEGER PRIMARY KEY AUTOINCREMENT, CategoryName TEXT, InstanceName TEXT,CounterName TEXT, Value INTEGER, Time INTEGER)");
+
+                connection.Execute($"INSERT INTO {item.CategoryName.Trim().Replace(" ", "")}" +
+                    $" (CategoryName, InstanceName, CounterName, Value, Time) VALUES(@CategoryName, @InstanceName, @CounterName, @Value, @Time)",
                     // Анонимный объект с параметрами запроса
                     new
                     {
@@ -40,34 +44,42 @@ namespace MetricsMeneger.Services.Repositories
                     });
         }
 
-        public void Delete(int id)
+        internal IList<string> GetAllTables()
+        {
+            using var connection = new SQLiteConnection(_connectionString);
+            connection.Open();
+            using var cmd = new SQLiteCommand(connection); 
+            return connection.Query<string>("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;").ToList();           
+        }
+
+        public void Delete(int id,string _nameTable)
         {
             using (var connection = new SQLiteConnection(_connectionString))
             {
-                //connection.Execute($"DELETE FROM {_nameTable} WHERE id=@id",
-                //    new
-                //    {
-                //        id = id
-                //    });
+                connection.Execute($"DELETE FROM {_nameTable.Trim().Replace(" ", "")} WHERE id=@id",
+                    new
+                    {
+                        id = id
+                    });
             }
         }
 
-        public IList<Metric> GetAll()
+        public IList<Metric> GetAll(string _nameTable)
         {
             using (var connection = new SQLiteConnection(_connectionString))
             {
                 // Читаем, используя Query, и в шаблон подставляем тип данных,
                 // объект которого Dapper, он сам заполнит его поля
                 // в соответствии с названиями колонок
-                return connection.Query<Metric>($"SELECT Id,Value,Time FROM ;").ToList();
+                return connection.Query<Metric>($"SELECT Id,Value,Time FROM {_nameTable.Trim().Replace(" ", "")};").ToList();
             }
         }
 
-        public Metric GetById(int id)
+        public Metric GetById(int id,string _nameTable)
         {
             using (var connection = new SQLiteConnection(_connectionString))
             {
-                return connection.QuerySingle<Metric>($"SELECT Id, Value, Time FROM  WHERE id = @id",
+                return connection.QuerySingle<Metric>($"SELECT Id, Value, Time FROM {_nameTable.Trim().Replace(" ", "")} WHERE id = @id",
                     new { id = id });
             }
         }
@@ -76,7 +88,7 @@ namespace MetricsMeneger.Services.Repositories
         {
             using (var connection = new SQLiteConnection(_connectionString))
             {
-                connection.Execute($"UPDATE {item.CategoryName} SET value = @value, time = @time WHERE id = @id",
+                connection.Execute($"UPDATE {item.CategoryName.Trim().Replace(" ", "")} SET value = @value, time = @time WHERE id = @id",
                     new
                     {
                         value = item.Value,
@@ -85,7 +97,5 @@ namespace MetricsMeneger.Services.Repositories
                     });
             }
         }
-
-       
     }
 }

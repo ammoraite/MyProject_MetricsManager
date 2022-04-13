@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsMeneger", "First API
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF_Client", "WPF_Client\WPF_Client.csproj", "{2F903BF2-7B50-4971-9CCC-56B7E475022C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13FA38AF-EC00-4A10-AB07-59F78B7FCBA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F903BF2-7B50-4971-9CCC-56B7E475022C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F903BF2-7B50-4971-9CCC-56B7E475022C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F903BF2-7B50-4971-9CCC-56B7E475022C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F903BF2-7B50-4971-9CCC-56B7E475022C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

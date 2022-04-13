@@ -1,0 +1,77 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:vm="clr-namespace:WPF_Client.ViewModels"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:cmd="clr-namespace:WPF_Client.Infrastructure.Commands"
+        x:Class="WPF_Client.MainWindow"
+        Title="{Binding Title}" Height="450" Width="707">
+
+    <Window.Resources>
+        <!--Статические ресурсы-->
+        <cmd:CloseAppComand x:Key="CloseAppComand"/>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
+
+    <!--Рабочее поле окна-->
+    <DockPanel>
+        
+        <!--Меню-->
+        <Menu  DockPanel.Dock="Top" Background="#FFB0B0B0" Foreground="Black" FontSize="16" FontFamily="Arial" FontWeight="Normal" > 
+            <MenuItem Header="Файл">
+                <MenuItem Header="Выход" Command="{StaticResource CloseAppComand}"/>
+            </MenuItem>
+            <MenuItem Header="Помощь">
+                <MenuItem Header="О программе" />
+            </MenuItem>
+        </Menu>
+
+        <!--Нижний статус бар-->
+        <StatusBar DockPanel.Dock="Bottom" Background="#FF5994D3" FontSize="16"> 
+            <TextBlock Text="{Binding Status}" />
+            <StatusBar>
+                <ProgressBar Width="120" Height="14" 
+                                 Value="10"></ProgressBar>
+            </StatusBar>
+        </StatusBar>
+
+        <!--Вкладки-->
+        <TabControl Background="#FFC8EFEE">
+
+            <!--Вкладка управление сбором метрик-->
+            <TabItem> 
+                <TabItem.Header>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <TextBlock  >
+                                <fa:ImageAwesome DockPanel.Dock="Left"  Icon="Brands_Microsoft"  Height="12" Margin="0,0,5,0" Foreground="#FF1E8AC5"/>
+                                <TextBlock Text="Управление Сбором Метрик" FontSize="14" FontWeight="Bold"/> 
+                            </TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
+
+            <!--Вкладка просмотр собранных данных-->
+            <TabItem > 
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome DockPanel.Dock="Left" Icon="Solid_Archive"  Height="12" Margin="0,0,5,0" Foreground="#FF1E8AC5"/>
+                        <TextBlock x:Name="Просмотр_Собранных_Данных" Text="Просмотр Собранных Данных" FontSize="14" FontWeight="Bold"/>
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
+            <TabItem Header="график">
+                <TextBox  TextWrapping="Wrap" Text="{Binding _Category._Instanses._instanses[0]}" Width="120"/>
+            </TabItem>
+            
+
+        </TabControl>
+
+    </DockPanel>
+
+</Window>

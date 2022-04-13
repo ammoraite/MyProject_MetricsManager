@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
+using System;
 
 namespace MetricsMeneger
 {
@@ -73,9 +75,45 @@ namespace MetricsMeneger
 
             #endregion
 
+            #region HttpClient
+
+            //services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>().AddTransientHttpErrorPolicy(p =>
+            //p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(1000)));
+
+            #endregion
+
+            #region Swagger
+
+            services.AddSwaggerGen();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "API сервиса агента сбора метрик",
+                    Description = "Здесь можно поиграть с api нашего сервиса",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Kadyrov",
+                        Email = string.Empty,
+                        Url = new Uri("https://kremlin.ru"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Можно указать, под какой лицензией всё опубликовано",
+                        Url = new Uri("https://example.com/license"),
+                    }
+                });
+            });
+
+
+            #endregion
+
             #region Jobs
 
-            
+
 
             services.AddSingleton<IJobFactory, SingletonJobFactory>();
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
@@ -83,17 +121,12 @@ namespace MetricsMeneger
 
             services.AddSingleton<MetricJob>();
             services.AddSingleton(new JobSchedule(
-                jobType: typeof(MetricJob),cronExpression: 
+                jobType: typeof(MetricJob), cronExpression:
                  "0/5 * * * * ?")); // Запускать каждые 5 секунд
-            #endregion
-
-            #region HttpClient
-
-
 
             #endregion
+
         }
-
 
         /// <summary>
         /// Этот метод вызывается средой выполнения.Используем его для настройки конвейера HTTP-запросов
@@ -109,6 +142,18 @@ namespace MetricsMeneger
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             // Запускаем миграции
             migrationRunner.MigrateUp();
+
+            // Включение middleware в пайплайн для обработки Swagger-запросов.
+            app.UseSwagger();
+            // включение middleware для генерации swagger-ui
+            // указываем эндпоинт Swagger JSON (куда обращаться за сгенерированной
+            // спецификацией,
+            // по которой будет построен UI).
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API сервиса агента сбора метрик");
+            });
+
         }
     }
 }
